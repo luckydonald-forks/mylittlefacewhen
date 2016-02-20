@@ -20,7 +20,7 @@ logininfo = {
 server = "https://mylittlefacewhen.com/api"
 
 if DEBUG:
-    server = server = "http://0.0.0.0:8000/api"
+    server = "http://0.0.0.0:8000/api"
 
 THUMB_SIZE = (0, 100,)
 PNGOUT_PATH = "/home/inopia/pngout-static"

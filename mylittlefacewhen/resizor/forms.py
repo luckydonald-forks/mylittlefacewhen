@@ -1,7 +1,9 @@
 from django import forms
 import base64
-#from resizor import models
-#import re
+
+# from resizor import models
+# import re
+
 
 class CreateTask(forms.Form):
     image = forms.CharField(max_length=10000000, required=True)
@@ -10,10 +12,9 @@ class CreateTask(forms.Form):
     write_gif = forms.BooleanField(required=False)
 
     def clean(self):
-	cleaned_data = self.cleaned_data
-
+        cleaned_data = self.cleaned_data
         sizes = []
-            
+
         for size in cleaned_data.get("sizes", "").split(","):
             try:
                 sizes.append(int(size))
