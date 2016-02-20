@@ -4,7 +4,9 @@ import requests
 import shutil
 import base64
 
-DEBUG = False
+#DEBUG = False
+from secrets import DEBUG
+
 
 logininfo = {
     "username":"",

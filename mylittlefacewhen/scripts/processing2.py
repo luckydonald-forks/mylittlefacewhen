@@ -5,8 +5,8 @@ import requests
 import shutil
 import sys
 from urllib import urlretrieve
-
 import secrets
+from secrets import DEBUG
 
 try:
     from PIL import Image
@@ -19,7 +19,6 @@ logininfo = {
 
 server = "https://mylittlefacewhen.com/api"
 
-DEBUG = False
 if DEBUG:
     server = server = "http://0.0.0.0:8000/api"
 
