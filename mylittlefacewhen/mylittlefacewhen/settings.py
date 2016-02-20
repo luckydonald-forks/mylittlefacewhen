@@ -26,6 +26,8 @@ INTERNAL_IPS = ["62.78.185.109",]
 
 ALLOWED_HOSTS = ["mlfw.info", "mylittlefacewhen.com", "www.mlfw.info", "www.mylittlefacewhen.com"]
 
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+
 if DEBUG:
     import mimetypes
     mimetypes.add_type("text/cache-manifest", ".appcache", True)
@@ -75,7 +77,7 @@ template_loaders = [
 ]
 template_dirs = [
     os.path.join(BASE_DIR, "templates"),
-    os.path.join(BASE_DIR, "static/mustache"),
+    os.path.join(STATIC_DIR, "mustache"),
     # Put strings here, like "/home/html/django_templates"
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -146,7 +148,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    STATIC_DIR,
 )
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

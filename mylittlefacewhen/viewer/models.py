@@ -1,5 +1,8 @@
 #from cStringIO import StringIO
 from datetime import datetime
+from smtplib import SMTPException
+
+from django.utils import timezone
 import hashlib
 import json
 import os
@@ -16,12 +19,14 @@ except:
 
 import requests
 import tagging
+import logging
 from tagging import registry
 
 
 from resizor.restful import process_image as resizor
 from viewer import forms
 
+logger = logging.getLogger(__name__)
 #IMAGESERVICE = "https://mylittlefacewhen.com/api/resizor/"
 #IMAGESERVICE = "http://image.mylittlefacewhen.com/api/"
 #IMAGESERVICE = "http://0.0.0.0:8001/api/"
@@ -226,7 +231,7 @@ class Face(models.Model):
             tags = "untagged, " + tags
 
         face = Face(
-            added=datetime.utcnow(),
+            added=timezone.now(),
             accepted=accepted,
             source=source,
         )
@@ -431,7 +436,7 @@ class Face(models.Model):
             return self.image.url
 
     def age(self):
-        return str(datetime.utcnow() - self.added).rpartition(":")[0]
+        return str(datetime.now() - self.added).rpartition(":")[0]
 
     def public_update(self, data):
         form = forms.PublicUpdateFace(data)
@@ -745,7 +750,7 @@ class ChangeLog(models.Model):
 
     @property
     def age(self):
-        return str(datetime.utcnow() - self.datetime).rpartition(":")[0]
+        return str(timezone.now() - self.datetime).rpartition(":")[0]
 
     @property
     def same_tags(self):
@@ -868,7 +873,9 @@ class Feedback(models.Model):
     image = models.ImageField(
         max_length=256,
         upload_to="upload/",
-        help_text="DEPRECATED")
+        help_text="DEPRECATED",
+        blank=True, null=True,  # allow empty
+    )
 
     text = models.TextField(
         help_text="The feedback goes here. What is on your mind?")
@@ -888,14 +895,18 @@ class Feedback(models.Model):
         help_text="DEPRECATED")
 
     def save(self, *args, **kwargs):
-        if (self.text):
-            s = "Contact:\t%s\nFeedback:\t%s\nTime:\t%s\nUseragent:\t%s\n" % \
-                (self.contact, self.text, str(self.datetime), self.useragent)
-            send_mail(
-                "mlfw feedback: " + self.contact,
-                s,
-                "server@mylittlefacewhen.com",
-                ADMINMAILS)
+        try:
+            if (self.text):
+                s = "Contact:\t%s\nFeedback:\t%s\nTime:\t%s\nUseragent:\t%s\n" % \
+                    (self.contact, self.text, str(self.datetime), self.useragent)
+                send_mail(
+                    "mlfw feedback: " + self.contact,
+                    s,
+                    "server@mylittlefacewhen.com",
+                    ADMINMAILS)
+        except SMTPException:
+            logger.exception("Feedback Mail via SMPT.")
+        finally:
             return super(Feedback, self).save(*args, **kwargs)
 
     def __unicode__(self):

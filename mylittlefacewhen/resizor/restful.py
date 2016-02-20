@@ -20,7 +20,8 @@ ImageFile.MAXBLOCK = 1024*1024
 
 
 #RESOURCES = {}
-GIF = "/home/inopia/webapps/mlfw_static/gif.png"
+from django.conf import settings
+GIF = settings.STATIC_URL + "gif.png"
 
 #def register(key):
 #

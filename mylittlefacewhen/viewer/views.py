@@ -186,7 +186,8 @@ def feedback(request):
                 contact=form.cleaned_data.get("contact"),
                 text=form.cleaned_data.get("feedback"),
                 datetime=datetime.utcnow(),
-                image=filu)
+                image=filu
+            )
             feedback.save()
             form = forms.FeedbackForm()
             message = "Thanks for your feedback!"
