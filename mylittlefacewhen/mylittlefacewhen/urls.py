@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 
+#import resizor
 from viewer import feeds, views
 
 from viewer.api import v2
@@ -54,7 +55,7 @@ urlpatterns = [
     url(r'^api/', include(v3.API.urls)),
 
     #RESIZOR
-    # url(r'^api/resizor/$', resizor),
+    #url(r'^api/resizor/$', resizor),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

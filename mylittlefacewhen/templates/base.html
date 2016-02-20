@@ -12,7 +12,7 @@
         <link rel="canonical" href="http://mylittlefacewhen.com{% firstof path request.path '/' %}">
         <title>MyLittleFaceWhen - {% block title %}Pony Reaction Pictures{% endblock %}</title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <link rel="alternate" type="application/rss+xml" title="MyLittleFaceWhen.com latest images" href="http://MyLittleFaceWhen.com/feed/">
+        <link rel="alternate" type="application/rss+xml" title="MyLittleFaceWhen.com latest images" href="{{ host }}/feed/">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width, height=device-height">        
         <meta name="description" content="{% block description %}Lots of well-taggged pony reaction images.{% endblock %}">

@@ -280,7 +280,9 @@ class Face(models.Model):
         objs = objs.filter(accepted=True)
 
         count = objs.count()
-        if type(number) == int:
+        if count == 0:  # no posts yet
+            return []
+        if isinstance(number, int):
             return [objs[random.randint(0, count - 1)] for i in xrange(number)]
         else:
             return objs[random.randint(0, count - 1)]

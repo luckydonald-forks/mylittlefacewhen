@@ -168,7 +168,11 @@ def rand(request):
     """
     Redirect to random face.
     """
-    return redirect("/f/%d/" % models.Face.random().id)
+    random_face = models.Face.random()
+    if random_face:
+        return redirect("/f/%d/" % random_face.id)
+    else:
+        return notfound(request)
 
 
 @csrf_exempt

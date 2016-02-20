@@ -44,7 +44,8 @@ def get_meta(request, title=None, description=None):
         "static_prefix": settings.STATIC_URL,
         "title": "Pony Reaction Pictures",
         "description": "Express yourself with ponies",
-        "default_image": settings.STATIC_URL + "cheerilee-square-300.png"
+        "default_image": settings.STATIC_URL + "cheerilee-square-300.png",
+        "host": request.get_host(),
     }
 
     if title is not None:
