@@ -118,7 +118,7 @@ class MustacheNode(template.Node):
                 for origin in origins:
                     try:
                         mustache_code = loader.get_contents(origin)
-                        return pystache_render(mustache_code, context=context)  # todo: context
+                        return pystache_render(mustache_code, context=context.get("metadata"))
                     except TemplateDoesNotExist:
                         continue
             except Exception as e:
