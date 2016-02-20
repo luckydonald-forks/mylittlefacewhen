@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 import secrets
+# SECURITY WARNING: don't run with debug turned on in production!
 from secrets import DEBUG
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -21,9 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secrets.SECRET_KEY
 
-# SECURITY WARNING: don't run with debug turned on in production!
-TEMPLATE_DEBUG = DEBUG
-
 INTERNAL_IPS = ("62.78.185.109")
 
 ALLOWED_HOSTS = ["mlfw.info", "mylittlefacewhen.com", "www.mlfw.info", "www.mylittlefacewhen.com"]
@@ -32,6 +30,7 @@ if DEBUG:
     import mimetypes
     mimetypes.add_type("text/cache-manifest", ".appcache", True)
     mimetypes.add_type("image/webp", ".webp", True)
+    ALLOWED_HOSTS.append("localhost")
 
 ADMINS = (
     ('Taivastiuku', 'taivastiuku@mylittlefacewhen.com'),
@@ -67,20 +66,42 @@ MIDDLEWARE_CLASSES = (
 )
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
+template_loaders = [
     'viewer.templatetags.mustache.Loader',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
     #'django.template.loaders.eggs.Loader',
-)
-
-TEMPLATE_DIRS = (
+]
+template_dirs = [
     os.path.join(BASE_DIR, "templates"),
     os.path.join(BASE_DIR, "static/mustache"),
     # Put strings here, like "/home/html/django_templates"
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-)
+]
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': template_dirs,
+        # insert your TEMPLATE_DIRS here
+        'OPTIONS': {
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': template_loaders,
+            # insert your TEMPLATE_LOADERS here
+        },
+    },
+]
+
 ROOT_URLCONF = 'mylittlefacewhen.urls'
 
 WSGI_APPLICATION = 'mylittlefacewhen.wsgi.application'

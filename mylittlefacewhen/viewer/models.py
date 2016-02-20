@@ -9,7 +9,6 @@ import re
 from django.db import models
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
-
 try:
     import Image
 except:
@@ -17,6 +16,8 @@ except:
 
 import requests
 import tagging
+from tagging import registry
+
 
 from resizor.restful import process_image as resizor
 from viewer import forms
@@ -641,7 +642,7 @@ class Face(models.Model):
     def __unicode__(self):
         return str(self.id) + " - " + self.title
 
-tagging.register(Face)
+registry.register(Face)
 
 
 class Flag(models.Model):
@@ -853,7 +854,7 @@ class ChangeLog(models.Model):
             s += "-%s, " % unicode(tag)
         return s[:-2]
 
-tagging.register(ChangeLog)
+tagging.registry.register(ChangeLog)
 
 
 class Feedback(models.Model):
@@ -919,7 +920,7 @@ class UserComment(models.Model):
         default="",
         help_text="Comment itself")
 
-    client = models.IPAddressField(
+    client = models.GenericIPAddressField(
         help_text="IP of the commenter")
 
     visible = models.CharField(
