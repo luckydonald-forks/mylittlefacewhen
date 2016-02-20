@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secrets.SECRET_KEY
 
-INTERNAL_IPS = ("62.78.185.109")
+INTERNAL_IPS = ["62.78.185.109",]
 
 ALLOWED_HOSTS = ["mlfw.info", "mylittlefacewhen.com", "www.mlfw.info", "www.mylittlefacewhen.com"]
 
@@ -31,6 +31,7 @@ if DEBUG:
     mimetypes.add_type("text/cache-manifest", ".appcache", True)
     mimetypes.add_type("image/webp", ".webp", True)
     ALLOWED_HOSTS.append("localhost")
+    INTERNAL_IPS.append("127.0.0.1")
 
 ADMINS = (
     ('Taivastiuku', 'taivastiuku@mylittlefacewhen.com'),
@@ -120,6 +121,8 @@ DATABASES = {
         'PORT': secrets.DB_CONF["port"],
     }
 }
+#from django.template.backends.django import DjangoTemplates
+#DjangoTemplates.
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

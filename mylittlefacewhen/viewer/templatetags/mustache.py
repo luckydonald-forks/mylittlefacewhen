@@ -15,12 +15,31 @@ where main_vars is a dict containing variables needed by the mustache.
 
 from django import template
 from django.conf import settings
-from django.template import Template
-from django.template.base import TemplateEncodingError, TemplateDoesNotExist
-from django.template.loader import make_origin
+from django.template import Template, loader, Engine
+from django.template.base import TemplateEncodingError
+from django.template.exceptions import TemplateDoesNotExist
+try:  # https://github.com/syrusakbary/pyjade/commit/375777a4204c9051f123a040979c3d05a9ec9c70
+    from django.template.loader import make_origin
+except ImportError:  # Django >= 1.9
+    try:
+        from django.template import Origin
+
+        def make_origin(display_name, loader, name, dirs):
+            return Origin(
+                name=display_name,
+                template_name=name,
+                loader=loader,
+            )
+    except ImportError:  # Django 1.8.x
+        from django.template.engine import Engine
+        make_origin = Engine.get_default().make_origi
 from django.template.loaders import filesystem
 from django.utils.encoding import smart_unicode
+from django.template.loaders.base import Loader as bLoader
 from pystache import render as pystache_render
+from pystache.renderer import Renderer
+
+# https://docs.djangoproject.com/en/1.9/releases/1.4/#extends-template-tag
 
 register = template.Library()
 
@@ -28,6 +47,7 @@ register = template.Library()
 class PystacheTemplate(Template):
 
     def __init__(self, template_string, origin=None, name='<Unknown Template>'):
+        super(PystacheTemplate, self).__init__(template_string, origin, name)
         try:
             template_string = smart_unicode(template_string)
         except:
@@ -41,10 +61,13 @@ class PystacheTemplate(Template):
         pass
 
     def render(self, context):
-        return pystache_render(self.nodelist, context)
+        return pystache_render(self.nodelist, context, to_str=str)
 
 
 class Loader(filesystem.Loader):
+
+    def __init__(self, engine):
+        super(Loader, self).__init__(engine)
 
     def get_template_sources(self, template_name, template_dirs=None):
         if not template_name.endswith(".mustache"):
@@ -82,7 +105,25 @@ class MustacheNode(template.Node):
         else:
             data = {}
         tpl = self.tpl.resolve(context)
-        return template.loader.get_template(tpl).render(data)
+        for engine in template.engines.all():
+            try:
+                origins = []
+                for loader in Engine.get_default().template_loaders:
+                    if not isinstance(loader, Loader):
+                        continue
+                    origins = list(loader.get_template_sources("meta.mustache"))
+                    break
+                else:
+                    break
+                for origin in origins:
+                    try:
+                        mustache_code = loader.get_contents(origin)
+                        return pystache_render(mustache_code, context=context)  # todo: context
+                    except TemplateDoesNotExist:
+                        continue
+            except Exception as e:
+                continue
+        return ""
 
 
 @register.tag(name="mustache")

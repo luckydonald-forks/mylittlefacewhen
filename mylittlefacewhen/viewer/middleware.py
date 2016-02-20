@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from django.conf import settings
+
 from django.http import HttpResponse
 from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.utils.cache import add_never_cache_headers
@@ -47,6 +49,9 @@ class RedirectDomain(object):
         if not host:
             return None
         if host not in ("mylittlefacewhen.com", "tiuku.me:8888"):
+            if settings.DEBUG and host in ("localhost", "localhost:8000", "127.0.0.1", "127.0.0.1:8000"):
+                # allow debug server
+                return None
             url = "http://mylittlefacewhen.com" + request.path
             return HttpResponsePermanentRedirect(url)
 
